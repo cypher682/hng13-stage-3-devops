@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue/Green Deployment</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.5s;
+        }
+        body.blue { background: #4169E1; }
+        body.green { background: #00C853; }
+        
+        .container {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        h1 { font-size: 3rem; margin: 0 0 20px 0; }
+        .info { font-size: 1.2rem; margin: 10px 0; }
+        .status { font-size: 1.5rem; font-weight: bold; margin: 20px 0; }
+    </style>
+</head>
+<body class="blue">
+    <div class="container">
+        <h1 id="pool">BLUE INSTANCE</h1>
+        <div class="status" id="status">Active</div>
+        <div class="info" id="release">Release: ...</div>
+        <div class="info">Abdulrahman Suleiman</div>
+        <div class="info">Slack: @Suleiman_cipher</div>
+        <div class="info">Repo: github.com/cypher682/blue-green-deployment</div>
+    </div>
+
+    <script>
+        async function check() {
+            try {
+                const res = await fetch('/version');
+                const pool = res.headers.get('X-App-Pool');
+                const release = res.headers.get('X-Release-Id');
+                
+                document.body.className = pool;
+                document.getElementById('pool').textContent = pool.toUpperCase() + ' INSTANCE';
+                document.getElementById('status').textContent = pool === 'blue' ? 'Primary Active' : 'Backup Active';
+                document.getElementById('release').textContent = 'Release: ' + release;
+            } catch(e) {
+                document.getElementById('status').textContent = 'Error';
+            }
+        }
+        check();
+        setInterval(check, 2000);
+    </script>
+</body>
+</html>

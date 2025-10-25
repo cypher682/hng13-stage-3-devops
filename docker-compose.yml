@@ -9,6 +9,7 @@ services:
     volumes:
       - ./nginx.conf.template:/etc/nginx/nginx.conf.template:ro
       - ./entrypoint.sh:/entrypoint.sh:ro
+      - ./public/index.html:/usr/share/nginx/html/index.html:ro
     environment:
       - PORT=${PORT:-3000}
       - ACTIVE_POOL=${ACTIVE_POOL:-blue}
