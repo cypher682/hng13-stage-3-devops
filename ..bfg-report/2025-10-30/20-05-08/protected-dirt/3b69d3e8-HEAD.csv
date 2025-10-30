@@ -1,0 +1,4 @@
+c3ddabed9e582cfe1e442ff00999e1001a2d29a5,MODIFY,regular-file,README.md,2104,8;43
+24ae55d1e2347423be975b4367acef02b00d3fc4,MODIFY,regular-file,docker-compose.yml,2332,70
+276f4cf67a5f7b8fa37035c0e2e23f7db3538438,MODIFY,regular-file,runbook.md,3085,47
+3d69ea0513b4a53bd1b3012d25532bc636e8925a,MODIFY,regular-file,watcher.py,9242,14;52;58
