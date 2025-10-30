@@ -1,15 +1,14 @@
-version: '3.8'
-
 services:
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
     ports:
-      - "8080:8080"
+      - "8080:80"
     volumes:
-      - ./nginx.conf.template:/etc/nginx/nginx.conf.template:ro
+      - ./nginx.conf.template:/etc/nginx/nginx.conf:ro
+      - ./public:/usr/share/nginx/html:ro
       - ./entrypoint.sh:/entrypoint.sh:ro
-      - ./public/index.html:/usr/share/nginx/html/index.html:ro
+      - nginx_logs:/var/log/nginx
     environment:
       - PORT=${PORT:-3000}
       - ACTIVE_POOL=${ACTIVE_POOL:-blue}
@@ -24,40 +23,66 @@ services:
   app_blue:
     image: ${BLUE_IMAGE}
     container_name: app_blue
-    ports:
-      - "8081:${PORT:-3000}"
     environment:
       - APP_POOL=blue
       - RELEASE_ID=${RELEASE_ID_BLUE:-blue-release-1.0.0}
       - PORT=${PORT:-3000}
+    expose:
+      - "${PORT}"
     networks:
       - app_network
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT:-3000}/healthz"]
       interval: 10s
       timeout: 3s
       retries: 3
       start_period: 10s
+    restart: unless-stopped
 
   app_green:
     image: ${GREEN_IMAGE}
     container_name: app_green
-    ports:
-      - "8082:${PORT:-3000}"
     environment:
       - APP_POOL=green
       - RELEASE_ID=${RELEASE_ID_GREEN:-green-release-1.0.0}
       - PORT=${PORT:-3000}
+    expose:
+      - "${PORT}"
     networks:
       - app_network
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${PORT:-3000}/healthz"]
       interval: 10s
       timeout: 3s
       retries: 3
       start_period: 10s
+    restart: unless-stopped
+
+  alert_watcher:
+    image: python:3.11-slim
+    container_name: alert_watcher
+    volumes:
+      - nginx_logs:/var/log/nginx:ro
+      - ./watcher.py:/app/watcher.py:ro
+      - ./requirements.txt:/app/requirements.txt:ro
+    working_dir: /app
+    environment:
+      - ***REMOVED***=${***REMOVED***}
+      - ACTIVE_POOL=${ACTIVE_POOL:-blue}
+      - ERROR_RATE_THRESHOLD=${ERROR_RATE_THRESHOLD:-2}
+      - WINDOW_SIZE=${WINDOW_SIZE:-200}
+      - ALERT_COOLDOWN_SEC=${ALERT_COOLDOWN_SEC:-300}
+      - ALERT_IDENTIFIER=${ALERT_IDENTIFIER:-SHADOW-SLAVE}
+    command: >
+      sh -c "pip install --no-cache-dir -q -r requirements.txt && python -u watcher.py"
+    depends_on:
+      - nginx
+    networks:
+      - app_network
+    restart: unless-stopped
+
+volumes:
+  nginx_logs:
 
 networks:
   app_network:
