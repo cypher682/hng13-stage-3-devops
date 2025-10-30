@@ -11,7 +11,7 @@ from collections import deque
 from datetime import datetime
 
 # Environment configuration
-***REMOVED*** = os.getenv('***REMOVED***')
+SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL')
 ACTIVE_POOL = os.getenv('ACTIVE_POOL', 'blue')
 ERROR_RATE_THRESHOLD = float(os.getenv('ERROR_RATE_THRESHOLD', '2'))
 WINDOW_SIZE = int(os.getenv('WINDOW_SIZE', '200'))
@@ -49,13 +49,13 @@ class AlertWatcher:
 
     def send_slack_alert(self, message):
         """Send alert to Slack webhook"""
-        if not ***REMOVED***:
+        if not SLACK_WEBHOOK_URL:
             print(f"[ALERT-NO-WEBHOOK]\n{message}\n")
             return False
 
         try:
             response = requests.post(
-                ***REMOVED***,
+                SLACK_WEBHOOK_URL,
                 json={"text": message},
                 headers={'Content-Type': 'application/json'},
                 timeout=10

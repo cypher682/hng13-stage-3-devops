@@ -44,7 +44,7 @@ To avoid failover alerts during planned pool toggles:
 - **Test Failover**: Inject chaos with `curl http://localhost:8080/chaos` or `docker stop app_blue`.
 - **Test Error Rate**: Run `while true; do curl -s http://localhost:8080/version; sleep 0.1; done` during chaos to trigger 5xx errors.
 - **No Alerts?**:
-  - Verify ***REMOVED*** in .env.
+  - Verify SLACK_WEBHOOK_URL in .env.
   - Check Nginx logs in shared volume: `cat /var/log/nginx/access.log`.
   - Ensure log format matches watcher.py regex.
 - **Contact**: Escalate to on-call engineer if unresolved.

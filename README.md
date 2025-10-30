@@ -5,7 +5,7 @@ This project extends a blue/green deployment (Stage 2) with operational visibili
 ## Setup Instructions
 1. Clone the repo: `git clone <your-repo-url>`
 2. Copy .env.example: `cp .env.example .env`
-3. Edit .env: Set `***REMOVED***` to your Slack webhook (keep secret).
+3. Edit .env: Set `SLACK_WEBHOOK_URL` to your Slack webhook (keep secret).
 4. Start services: `docker compose up -d`
 5. Verify:
    - Nginx: `curl http://localhost:8080/version`
@@ -40,5 +40,5 @@ See `runbook.md` for alert meanings and operator actions.
 
 ## Notes
 - No app image modifications; all logic in Nginx, Docker Compose, and watcher.py.
-- Alerts use shared nginx_logs volume and ***REMOVED*** from .env.
+- Alerts use shared nginx_logs volume and SLACK_WEBHOOK_URL from .env.
 - Stage 2 tests (baseline, chaos, failover) remain valid.

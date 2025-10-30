@@ -67,7 +67,7 @@ services:
       - ./requirements.txt:/app/requirements.txt:ro
     working_dir: /app
     environment:
-      - ***REMOVED***=${***REMOVED***}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
       - ACTIVE_POOL=${ACTIVE_POOL:-blue}
       - ERROR_RATE_THRESHOLD=${ERROR_RATE_THRESHOLD:-2}
       - WINDOW_SIZE=${WINDOW_SIZE:-200}
